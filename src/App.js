@@ -1,5 +1,5 @@
-function App() {
-  return <></>
-}
+import Router from './utils/Router/Router'
 
-export default App
+export default function App() {
+  return <Router />
+}
