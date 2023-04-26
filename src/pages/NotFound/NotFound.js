@@ -1,13 +1,14 @@
 import { Link } from 'react-router-dom'
+import PropTypes from 'prop-types'
 import './NotFound.css'
 
-export default function NotFound() {
+export default function NotFound({ title, text }) {
   return (
     <div className='error'>
       <div className='error-content'>
-        <p className='error-number'>404</p>
+        <p className='error-number'>{title ? title : '404'}</p>
         <p className='error-message'>
-          Oups! La page que vous demandez n'existe pas.
+          {text ? text : "Oups! La page que vous demandez n'existe pas."}
         </p>
       </div>
       <Link
@@ -18,4 +19,9 @@ export default function NotFound() {
       </Link>
     </div>
   )
+}
+
+NotFound.propTypes = {
+  title: PropTypes.string,
+  text: PropTypes.string,
 }

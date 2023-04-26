@@ -1,73 +1,121 @@
+import { useEffect, useState } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
+import { useDispatch, useSelector } from 'react-redux'
+import { getUser } from '../../state/slices/user.slice'
+import Api from '../../utils/Api/Api'
 import Account from '../../components/Account/Account'
+import NotFound from '../NotFound/NotFound'
 
-export default function Profile() {
-  return (
-    <div>
-      <main className='main bg-dark'>
+function Profile() {
+  const [editContent, setEditContent] = useState(false)
+  const [firstName, setFirstName] = useState('')
+  const [lastName, setLastName] = useState('')
+  const user = useSelector((state) => state.user)
+  const validToken = useSelector((state) => state.user.token)
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    if (validToken) {
+      setFirstName(user.firstName)
+      setLastName(user.lastName)
+    } else {
+      setTimeout(() => {
+        navigate('/signin')
+      }, 7000)
+    }
+  }, [user])
+
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+    await Api.setUserInfo(validToken, { firstName, lastName })
+    dispatch(getUser({ firstName: firstName, lastName: lastName }))
+    setEditContent(false)
+  }
+
+  if (validToken) {
+    return (
+      <main className='user main bg-dark'>
         <div className='header'>
-          <h1>
-            Welcome back
-            <br />
-            <form onSubmit>
-              <div className='username-inputs'>
-                <div>
+          {editContent ? (
+            <>
+              <h1>Welcome back</h1>
+              <form className='profil-form'>
+                <div className='profil-inputs'>
                   <input
                     type='text'
-                    id='username'
-                    defaultValue='Tony'
+                    name='firstName'
                     className='input-update'
+                    onChange={(e) => setFirstName(e.target.value)}
+                    value={firstName}
                   />
-                </div>
-                <div>
                   <input
                     type='text'
-                    id='lastname'
-                    defaultValue='Jarvis'
+                    name='lastName'
                     className='input-update'
+                    onChange={(e) => setLastName(e.target.value)}
+                    value={lastName}
                   />
                 </div>
-              </div>
-              <div className='username-buttons'>
-                <button
-                  type='submit'
-                  className='button-update'
-                >
-                  Save
-                </button>
-                <button
-                  type='button'
-                  className='button-update'
-                  onClick
-                >
-                  Cancel
-                </button>
-              </div>
-            </form>
-          </h1>
-          <button
-            className='edit-button'
-            onClick
-          >
-            Edit Name
-          </button>
+                <div className='profil-buttons'>
+                  <button
+                    className='button-update'
+                    onClick={(e) => handleSubmit(e)}
+                  >
+                    Save
+                  </button>
+                  <button
+                    className='button-update'
+                    onClick={() => setEditContent(false)}
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </form>
+            </>
+          ) : (
+            <>
+              <h1>
+                Welcome back
+                <br />
+                {user.firstName} {user.lastName} !
+              </h1>
+              <button
+                className='edit-button'
+                onClick={() => setEditContent(true)}
+              >
+                Edit Name
+              </button>
+            </>
+          )}
         </div>
         <h2 className='sr-only'>Accounts</h2>
         <Account
           title='Argent Bank Checking (x8349)'
-          amountString='2082.79'
+          amount='$2,082.79'
           description='Available Balance'
         />
         <Account
           title='Argent Bank Savings (x6712)'
-          amountString='10928.42'
+          amount='$10,928.42'
           description='Available Balance'
         />
         <Account
           title='Argent Bank Credit Card (x8349)'
-          amountString='184.30'
+          amount='$184.30'
           description='Current Balance'
         />
       </main>
-    </div>
-  )
+    )
+  } else {
+    return (
+      <NotFound
+        title='401'
+        text=' Vous devez être connecté pour accéder à cette page. Vous
+    serez automatiquement redirigé dans 7 secondes.'
+      />
+    )
+  }
 }
+
+export default Profile

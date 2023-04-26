@@ -334,3 +334,10 @@ body {
 a svg {
   margin-right: 5px;
 }
+
+.login-error-message {
+  color: rgb(235, 80, 80);
+  font-size: 14px;
+  margin: 0 0 10px 0;
+  text-align: left;
+}
