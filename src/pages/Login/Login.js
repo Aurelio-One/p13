@@ -37,7 +37,7 @@ function Login() {
 
         <h1>Sign In</h1>
 
-        <form>
+        <form onSubmit={handleSubmit}>
           <div className='input-wrapper'>
             <label htmlFor='username'>Email</label>
             <input
@@ -63,9 +63,8 @@ function Login() {
             <label htmlFor='remember-me'>Remember me</label>
           </div>
           <button
-            type='button'
+            type='submit'
             className='sign-in-button'
-            onClick={() => handleSubmit()}
           >
             Sign In
           </button>
