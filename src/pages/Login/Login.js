@@ -4,6 +4,10 @@ import { useNavigate } from 'react-router-dom'
 import { getToken, getUser } from '../../state/slices/user.slice'
 import Api from '../../utils/Api/Api'
 
+/**
+ * Login component that displays the login form.
+ * @returns {JSX.Element} Login form JSX element.
+ */
 function Login() {
   const [email, setEmail] = useState()
   const [password, setPassword] = useState()
@@ -11,18 +15,31 @@ function Login() {
   const navigate = useNavigate()
   const dispatch = useDispatch()
 
+  /**
+   * Dispatches a getUser action to get user data from the API and store it in the state.
+   * @returns {Promise<void>} Promise object that resolves with nothing.
+   */
   const setUser = async () => {
     const data = await Api.getUserInfo(validToken)
     dispatch(getUser({ firstName: data.firstName, lastName: data.lastName }))
   }
 
-  const handleSubmit = async () => {
+  /**
+   * Sends a login request to the API and dispatches a getToken action to store the received token in the state.
+   * @returns {Promise<void>} Promise object that resolves with nothing.
+   */
+  const handleSubmit = async (e) => {
+    e.preventDefault()
     const res = await Api.tokenLogin({ email, password })
     if (res) {
       dispatch(getToken({ token: res, email: email }))
     }
   }
 
+  /**
+   * Redirects to the profile page if a valid token is present.
+   * @returns {void} Nothing is returned.
+   */
   useEffect(() => {
     if (validToken) {
       setUser()

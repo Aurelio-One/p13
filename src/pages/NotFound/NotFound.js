@@ -1,3 +1,11 @@
+/**
+The NotFound component renders a 404 error page with an optional title and text message.
+@param {Object} props - The props object containing optional 'title' and 'text' properties.
+@param {string} props.title - The optional title of the error page.
+@param {string} props.text - The optional text message of the error page.
+@returns {JSX.Element} - A React JSX Element that renders a 404 error page.
+*/
+
 import { Link } from 'react-router-dom'
 import PropTypes from 'prop-types'
 import './NotFound.css'

@@ -6,6 +6,10 @@ import Api from '../../utils/Api/Api'
 import Account from '../../components/Account/Account'
 import NotFound from '../NotFound/NotFound'
 
+/**
+ * Renders the user's profile page
+ * @return {JSX.Element} The profile page
+ */
 function Profile() {
   const [editContent, setEditContent] = useState(false)
   const [firstName, setFirstName] = useState('')
@@ -16,16 +20,22 @@ function Profile() {
   const navigate = useNavigate()
 
   useEffect(() => {
-    if (validToken) {
-      setFirstName(user.firstName)
-      setLastName(user.lastName)
-    } else {
+    // If user is not authenticated, redirect to sign in page after 7 seconds
+    if (!validToken) {
       setTimeout(() => {
         navigate('/signin')
       }, 7000)
+    } else {
+      // Populate first and last name fields with user's info
+      setFirstName(user.firstName)
+      setLastName(user.lastName)
     }
   }, [user])
 
+  /**
+   * Submits updated user info to the API
+   * @param {Object} e - The event object
+   */
   const handleSubmit = async (e) => {
     e.preventDefault()
     await Api.setUserInfo(validToken, { firstName, lastName })

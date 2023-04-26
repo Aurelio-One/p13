@@ -3,6 +3,10 @@ import ChatIcon from '../../assets/img/icon-chat.png'
 import MoneyIcon from '../../assets/img/icon-money.png'
 import SecurityIcon from '../../assets/img/icon-security.png'
 
+/**
+ * Home page component
+ * @return {JSX.Element} Home page content
+ */
 export default function Home() {
   return (
     <div>

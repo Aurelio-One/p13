@@ -9,11 +9,18 @@ import {
   faRightFromBracket,
 } from '@fortawesome/free-solid-svg-icons'
 
+/**
+ * Header component displays navigation menu bar and logo.
+ * @returns {JSX.Element} - Rendered Header component.
+ */
 export default function Header() {
   const [connected, setConnected] = useState(false)
   const { firstName, isConnected } = useSelector((state) => state.user)
   const dispatch = useDispatch()
 
+  /**
+   * Handles user logout and dispatches logOut action.
+   */
   const handleDisconnect = () => {
     dispatch(logOut())
   }
