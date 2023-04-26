@@ -1,41 +1,67 @@
 import axios from 'axios'
 
-export default class Api {
-  // Define a static method for logging in with an email and password
-  static async login(email, password) {
-    // Set the API endpoint URL
-    const URL = 'http://localhost:3001'
+const urlAPI = axios.create({
+  baseURL: 'http://localhost:3001/api/v1',
+})
+
+class Api {
+  handleError(error) {
+    if (error.response) {
+      switch (error.response.status) {
+        case 400:
+          console.log('Mauvaise demande')
+          break
+        case 500:
+          console.log('Erreur interne du serveur')
+          break
+        default:
+          console.log("Une erreur s'est produite :", error.response.status)
+      }
+    } else {
+      console.log("Une erreur s'est produite :", error)
+    }
+  }
+
+  tokenLogin = async (info) => {
     try {
-      // Make a POST request to the login endpoint with the email and password
-      const response = await axios.post(`${URL}/user/login`, {
-        email,
-        password,
+      const res = await urlAPI.post('/user/login', info)
+      return res.data.body.token
+    } catch (error) {
+      this.handleError(error)
+    }
+  }
+
+  getUserInfo = async (token) => {
+    try {
+      const res = await urlAPI.post(
+        '/user/profile',
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+        }
+      )
+      return res.data.body
+    } catch (error) {
+      this.handleError(error)
+    }
+  }
+
+  setUserInfo = async (token, user) => {
+    try {
+      const res = await urlAPI.put('/user/profile', user, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
       })
-      return response.data
+      return res.data.body
     } catch (error) {
-      throw error
-    }
-  }
-
-  // Define a static method for getting the user profile
-  static async getUserProfile() {
-    try {
-      // Make a GET request to the user profile endpoint
-      const response = await axios.get('/profile')
-      return response.data
-    } catch (error) {
-      throw error
-    }
-  }
-
-  // Define a static method for updating the user profile
-  static async putUserProfile(data) {
-    try {
-      // Make a PUT request to the user profile endpoint with the data to update
-      const response = await axios.put('/profile', data)
-      return response.data
-    } catch (error) {
-      throw error
+      this.handleError(error)
     }
   }
 }
+
+export default new Api()
