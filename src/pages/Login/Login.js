@@ -11,6 +11,7 @@ import Api from '../../utils/Api/Api'
 function Login() {
   const [email, setEmail] = useState()
   const [password, setPassword] = useState()
+  const [error, setError] = useState()
   const validToken = useSelector((state) => state.user.token)
   const navigate = useNavigate()
   const dispatch = useDispatch()
@@ -33,6 +34,8 @@ function Login() {
     const res = await Api.tokenLogin({ email, password })
     if (res) {
       dispatch(getToken({ token: res, email: email }))
+    } else {
+      setError('Invalid email or password')
     }
   }
 
@@ -72,6 +75,7 @@ function Login() {
               value={password}
             />
           </div>
+          <div className='login-error-message'>{error}</div>
           <div className='input-remember'>
             <input
               type='checkbox'
